@@ -196,6 +196,7 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
             
             //set header links
             header.links.add(0, new NodeLinks(newItem, null));
+            listSize++;
             return true;
         }
 
