@@ -89,7 +89,7 @@ private static <T> int executeFinds(Collection<? extends T> coll, ArrayList<?ext
             failures++;
         }
     }
-    if(failures > 0) {
+    if(failures >= 0) {
         System.out.printf("(%,d missing) ", failures);
     }
     return 0;
@@ -125,6 +125,7 @@ private static <T extends Comparable<T>> void executeCase(ArrayList<? extends T>
         System.out.printf(" SkipListSet ");
         ms = CPUTimer.timeFor(() -> skipListSet.addAll(values));
         System.out.printf("add: %,6dms ", ms);
+        System.out.print("!!!!! skiplist size = " + skipListSet.size());
         ms = CPUTimer.timeFor(() -> executeFinds(skipListSet, strikes));
         System.out.printf("find: %,6dms ", ms);
 
@@ -228,11 +229,11 @@ public static void main(String args[]) {
     // System.gc();
     // SkipListTestHarness.executeDoubleCase(1000000, 100000, false, true);
     // System.gc();
-    SkipListTestHarness.executeIntCase(100000, 10000, true, false);
+    SkipListTestHarness.executeIntCase(100000, 10000, false, true);
     System.gc();
-    SkipListTestHarness.executeIntCase(1000000, 10000, false, false);
+    SkipListTestHarness.executeIntCase(1000000, 10000, false, true);
     System.gc();
-    SkipListTestHarness.executeIntCase(10000000, 10000, false, false);
+    SkipListTestHarness.executeIntCase(10000000, 10000, false, true);
     System.gc();
     // SkipListTestHarness.executeIntCase(10000000, 1000000, false, true);
     // System.gc();

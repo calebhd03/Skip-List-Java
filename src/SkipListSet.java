@@ -158,8 +158,11 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
             }
         }
 
-        //the spot of where to insert item
-        if(curItem.value == (T)o)
+        //Move to found item
+        curItem = curItem.links.get(0).nextItem;
+        //check to see if this value
+
+        if(curItem != null && curItem.value == (T)o)
             return true;
         else
             return false;
