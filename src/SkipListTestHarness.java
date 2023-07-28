@@ -2,7 +2,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.concurrent.Callable;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -206,15 +208,124 @@ private static <T extends Comparable<T>> void testCase() {
 public SkipListTestHarness() {}
 public static void main(String args[]) {
     //SortedSet<String> list = new SortedSet<>();
+    /*
+    int values = 10;
+    ArrayList<Integer> blankCollection = new ArrayList<Integer>(10);
+    for(int i=0; i< values; i++)
+    {
+        blankCollection.add(i);
+    }
+    
+    System.out.println("\n()");
+    SkipListSet<Integer> blankSkipListSet = new SkipListSet<>();
+    blankSkipListSet.printList();
 
-    // int values = 100000;
-    // //testCase();
-    // SkipListSet<Integer> skipListSet = new SkipListSet<>();
-    // for(int i=0; i< values; i++)
-    // {
-    //     skipListSet.add(i);
+    System.out.println("\n(COLLECTION)");
+    SkipListSet<Integer> skipListSet = new SkipListSet<>(blankCollection);
+    skipListSet.printList();
+
+    System.out.println("\nclear");
+    skipListSet.clear();
+    skipListSet.printList();
+
+    System.out.println("\nadd");
+    skipListSet.add(47);
+    skipListSet.printList();
+
+    System.out.println("\naddAll");
+    skipListSet.addAll(blankCollection);
+    skipListSet.printList();
+
+    System.out.println("\ncontains(47) " + skipListSet.contains(47));
+    System.out.println("contains(-30) " + skipListSet.contains(-30));
+
+    System.out.println("\ncontainsAll");
+    ArrayList<Integer> blank = new ArrayList<Integer>();
+    System.out.println("containsAll(blank collection) " + skipListSet.containsAll(blank));
+    ArrayList<Integer> containsAllCollection = new ArrayList<>();
+    for(int i=0; i< 8; i++)
+    {
+        containsAllCollection.add(i);
+    }
+    System.out.println("containsAll(partialCOllection) " + skipListSet.containsAll(containsAllCollection));
+    containsAllCollection.add(-10);
+    System.out.println("containsAll(allButOne) " + skipListSet.containsAll(containsAllCollection));
+
+    //EQUALS NOT FINISHED
+    System.out.println("\nequals");
+    SkipListSet<Integer> equalsSkipList = new SkipListSet<>(blankCollection);
+    skipListSet.clear();
+    skipListSet.addAll(blankCollection);
+    System.out.println("equals = " + skipListSet.equals(equalsSkipList));
+    equalsSkipList.printList();
+    skipListSet.printList();
+
+    System.out.println("\nHash code " + skipListSet.hashCode());
+
+    System.out.println("\nIs empty " + skipListSet.isEmpty());
+
+    Iterator<Integer> i = skipListSet.iterator();
+    System.out.println("\nIterator = " + i);
+
+    System.out.println("\nIs empty " + skipListSet.isEmpty());
+
+    System.out.println("\nlast = " + skipListSet.last());
+    System.out.println("first = " + skipListSet.first());
+    skipListSet.printList();
+
+    System.out.println("\nRemove");
+    ArrayList<Integer> removeArrayList = new ArrayList<>();
+    removeArrayList.add(9);
+    removeArrayList.add(87);
+    skipListSet.remove(0);
+    skipListSet.removeAll(removeArrayList);
+    skipListSet.printList();
+
+    System.out.println("\nRetainAll");
+    ArrayList<Integer> retainArrayList = new ArrayList<>();
+    retainArrayList.add(6);
+    retainArrayList.add(7);
+    retainArrayList.add(9);
+    retainArrayList.add(8);
+    skipListSet.retainAll(retainArrayList);
+    skipListSet.printList();
+
+
+    System.out.println("\nSize = " + skipListSet.size());
+
+    System.out.println("\nTo array = ");
+
+    Object[] toArray = skipListSet.toArray();
+    for (Object object : toArray) {
+        System.out.println(object);
+    }
+
+    ArrayList<Integer> argArray = new ArrayList<>();
+    SkipListSet<Integer> newlist = new SkipListSet<>();
+    //Object[] argRetArray = skipListSet.toArray(newlist);
+
+    // for (Object object : argRetArray) {
+    //     System.out.println(object);
     // }
-    // //skipListSet.printList();
+
+    System.out.println("\nitera = ");
+    for(Object item : skipListSet)
+    {
+        System.out.println(item);
+    }
+
+    System.out.println("\nrebalance = ");
+    for(int z=0; z< 100; z++)
+    {
+        skipListSet.add(z);
+    }
+    skipListSet.printList();
+    skipListSet.reBalance();
+    skipListSet.printList();
+
+    */
+
+    
 
     // for(int i=0; i< values; i++)
     // {
