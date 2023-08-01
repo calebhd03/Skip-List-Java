@@ -12,239 +12,212 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
     int listSize = 0;
     
     
-    public SkipListSet()
-    {
-    }
+    public SkipListSet(){}
+    //Constructor that adds the given collection
     public SkipListSet(Collection<? extends T> c)
     {
         addAll(c);
     }
 
+    //Object that holds the links between nodes
     public class NodeLinks
     {
         SkipListSetItem nextItem=null;
         SkipListSetItem previousItem=null;
 
+        //Constructor that assigns pointers nextItem and previousIten
         NodeLinks(SkipListSetItem nexItem, SkipListSetItem prevItem)
         {
             this.nextItem = nexItem;
             this.previousItem = prevItem;
         }
     }
+    //Object item wrapper 
     public class SkipListSetItem
     {
-        T value;
+        T value = null;
         ArrayList <NodeLinks> links = new ArrayList<>();
 
+        //Constructor that sets the value
         public SkipListSetItem(T e) {
             this.value =e;
         }
-        public SkipListSetItem() {
-        }
+        //Add a link at the given level with pointers to next item and previous item
         public void addLink(int level, SkipListSetItem nextItem, SkipListSetItem prevItem)
         {
             links.add(level, new NodeLinks(nextItem, prevItem));
         }
+        //Add a link at the next level with pointers to next item and previous item
         public void addLink(SkipListSetItem nextItem, SkipListSetItem prevItem)
         {
             links.add(new NodeLinks(nextItem, prevItem));
         }
-        public void setValue(T value) {
-            this.value = value;
-        }
-        public void printItem()
-        {
-            System.out.print("Value = " + this.value + " | ");
-
-            System.out.print("Links = " + this.links.size() + " | ");
-            for(int j =0; j<this.links.size(); j++)
-            {
-                if(this.links.get(j).previousItem != null)
-                {
-                    System.out.print(" | <link[" + j + "] = " +  this.links.get(j).previousItem.value);
-                }
-                else if(this.links.get(j).previousItem == null)
-                {
-                    System.out.print(" | link[" + j + "] = null");
-                }
-                if(this.links.get(j).nextItem != null)
-                {
-                    System.out.print("  >link[" + j + "] = " +  this.links.get(j).nextItem.value);
-                }
-                else if(this.links.get(j).nextItem == null)
-                {
-                    System.out.print("  link[" + j + "] = null");
-                }
-            }
-            System.out.println("");
-        }
+        //Compare this item to o
         public int compareTo(Object o) {
 
             return this.compareTo(o);
+        }
+        //Return the link at the given level
+        public NodeLinks links(int i)
+        {
+            return this.links.get(i);
+        }
+        //Return the next item at immediate item
+        public SkipListSetItem neighbor()
+        {
+            return this.links(0).nextItem;
+        }
+        //Return the next item at the given level
+        public SkipListSetItem getLinkItem(int i)
+        {
+            return this.links(i).nextItem;
+        }
+        //Return the previous item at the given level
+        public SkipListSetItem getLinkPreviousItem(int i)
+        {
+            return this.links(i).previousItem;
         }
     }
 
     class SortedSetExampleIterator<T extends Comparable<T>> implements Iterator<T>
     {
         SkipListSetItem current;
+        //Constructor that sets the current node to the header
         public SortedSetExampleIterator()
         {
             current = header;
         }
         @Override
-        public boolean hasNext() {
-            return (current.links.get(0).nextItem != null)
+        //Returns if their is another node after the current node
+        public boolean hasNext() 
+        {
+            return (current.neighbor() != null);
         }
         @Override
+        @SuppressWarnings("unchecked")
+        //Returns the value of the next node
         public T next() {
-            current = current.links.get(0).nextItem;
+            if(isEmpty()) return null;
+
+            current = current.neighbor();
             return (T) current.value;
         }
     }
 
+    //Rebalances the list
     public void reBalance()
     {
-        // //visiting every item in the list and re randomizing its height
-        if(listSize == 0)
-            return;
+        if(isEmpty()) return;
         
-        SkipListSetItem curItem = header.links.get(0).nextItem;
+        //Holds a list of back pointers 
+        SkipListSetItem curItem = header.neighbor();
         ArrayList<SkipListSetItem> pointers = new ArrayList<>();
         for (int i=0; i<listMaxHeight; i++) {
             pointers.add(null);
         }
         
+        //visiting every item in the list and re randomizing its height
         while(curItem != null)
         {
-            SkipListSetItem nextItem = curItem.links.get(0).nextItem;
+            SkipListSetItem nextItem = curItem.neighbor();
             curItem.links.clear();
 
+            //New height of node
             int rHeight = randomHeight();
             
+            //Reassign pointers for the current node
             for (int i = 0; i < rHeight; i++) {
                 if(pointers.get(i) == null)
                 {
                     if(header.links.size() <= i)
                         header.links.add(new NodeLinks(null, null));
 
-                    header.links.get(i).nextItem = curItem;
+                    header.links(i).nextItem = curItem;
                     curItem.links.add(new NodeLinks(null, null));
                 }
                 else
                 {
                     curItem.links.add(new NodeLinks(null, pointers.get(i)));
-                    pointers.get(i).links.get(i).nextItem = curItem;
+                    pointers.get(i).links(i).nextItem = curItem;
                 }
                 pointers.remove(i);
                 pointers.add(i, curItem);
             }
 
+            //Move to next node in the list
             curItem = nextItem;
         }
     }
-    
-    public void printList()
-    {
-        if(isEmpty())
-        {
-            System.out.println("List is empty");
-            return;
-        }
-
-        System.out.print("Header = "); header.printItem();
-
-        int elements = 0;
-        SkipListSetItem curItem = header.links.get(0).nextItem;
-        while(curItem != null)
-        {
-            curItem.printItem();
-            curItem = curItem.links.get(0).nextItem;
-            elements++;
-        }
-        System.out.println("Elements = " + elements);
-        System.out.println("List size = " + listSize);
-    }
-    public void printListValues()
-    {
-        System.out.print("Header = "); header.printItem();
-
-        int elements = 0;
-        SkipListSetItem curItem = header.links.get(0).nextItem;
-        while(curItem != null)
-        {
-            curItem = curItem.links.get(0).nextItem;
-            elements++;
-        }
-        System.out.println("Elements = " + elements);
-        System.out.println("List size = " + listSize);
-        System.out.println("Temp ArrayList size = " + listSize);
-    }
 
     @Override
+    //Return the size of the list
     public int size() {
         return listSize;
     }
     @Override
+    //Return if the list is empty
     public boolean isEmpty() {
-        if(listSize == 0)
-            return true;
-        else
-            return false;
+        return (listSize == 0);
     }
     @Override
     @SuppressWarnings("unchecked")
+    //Return boolean based on if the given object o is in the list
     public boolean contains(Object o){
-        if(listSize == 0)
-            return false;
+        if(isEmpty()) return false;
         
         SkipListSetItem curItem = header;
         
         //find position of next value
         for(int i=header.links.size()-1; i>=0; i--)
         {   
-            while(curItem.links.get(i).nextItem != null && curItem.links.get(i).nextItem.value.compareTo((T)o) < 0)
+            while(curItem.getLinkItem(i) != null && curItem.getLinkItem(i).value.compareTo((T)o) < 0)
             {
-                curItem = curItem.links.get(i).nextItem;
+                curItem = curItem.getLinkItem(i);
             }
         }
 
         //Move to found item
-        curItem = curItem.links.get(0).nextItem;
+        curItem = curItem.neighbor();
+
         //check to see if this value
-        if(curItem != null && curItem.value.compareTo((T)o) == 0)
-            return true;
-        else
-            return false;
-    
+        return (curItem != null && curItem.value.compareTo((T)o) == 0);
     }
     @Override
+    //Returns a new iterator
     public Iterator<T> iterator() {
-        return new SortedSetExampleIterator<T>();
+        return new SortedSetExampleIterator<>();
     }
     @Override
-    @SuppressWarnings("unchecked")
+    //Returns a Object[] of this list
     public Object[] toArray() {
         Object[] returnArray = new Object[listSize];
-        SkipListSetItem curItem = header.links.get(0).nextItem;
+
+        if(isEmpty()) return returnArray;
+
+        SkipListSetItem curItem = header.neighbor();
         int counter = 0;
+
+        //Add items of the list to the return array
         while(curItem != null)
         {
             returnArray[counter] = curItem.value;
-            curItem = curItem.links.get(0).nextItem;
+            curItem = curItem.neighbor();
             counter++;
         }
         return returnArray;
     }
     @Override
     @SuppressWarnings("unchecked")
+    //Returns a new T[] of the current list
     public <T> T[] toArray(T[] a) {
         return (T[]) Arrays.copyOf(toArray(), listSize, a.getClass());
     }
     
     @Override
+    //Adds the given value e to the list
     public boolean add(T e) {
         //empty list
-        if(listSize == 0)
+        if(isEmpty())
         {
             SkipListSetItem newItem = new SkipListSetItem(e);
 
@@ -263,15 +236,15 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         //find position of next value
         for(int i=header.links.size()-1; i>=0; i--)
         {
-            while(curItem.links.get(i).nextItem != null && curItem.links.get(i).nextItem.value.compareTo(e) < 0)
+            while(curItem.getLinkItem(i) != null && curItem.getLinkItem(i).value.compareTo(e) < 0)
             {
-                curItem = curItem.links.get(i).nextItem;
+                curItem = curItem.getLinkItem(i);
             }
             pointers.add(0, curItem);
         }
 
         //the spot of where to insert item
-        curItem = curItem.links.get(0).nextItem;
+        curItem = curItem.neighbor();
 
         //prevent duplicates
         if(curItem == null || curItem.value.compareTo(e) != 0)
@@ -293,14 +266,14 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
                 if(i < pointers.size() && pointers.get(i) != null)
                 {
                     //set new item links
-                    newItem.addLink(i, pointers.get(i).links.get(i).nextItem, pointers.get(i));
+                    newItem.addLink(i, pointers.get(i).getLinkItem(i), pointers.get(i));
     
                     //reset next item's back link to the new item 
-                    if(pointers.get(i).links.get(i).nextItem != null)
-                        pointers.get(i).links.get(i).nextItem.links.get(i).previousItem = newItem;
+                    if(pointers.get(i).getLinkItem(i)!= null)
+                        pointers.get(i).getLinkItem(i).links(i).previousItem = newItem;
     
                     //reset previous item's next link to the new item 
-                    pointers.get(i).links.get(i).nextItem = newItem;
+                    pointers.get(i).links(i).nextItem = newItem;
                 }
                 //add to header
                 else
@@ -314,13 +287,13 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
                     else
                     {
                         //reassign header links
-                        newItem.addLink(i, header.links.get(i).nextItem, null);
+                        newItem.addLink(i, header.getLinkItem(i), null);
                         //change headers pointer to new item
-                        if(header.links.get(i).nextItem  != null)
+                        if(header.getLinkItem(i)  != null)
                         {
-                            header.links.get(i).nextItem.links.get(i).previousItem = newItem;
+                            header.getLinkItem(i).links(i).previousItem = newItem;
                         }
-                        header.links.get(i).nextItem = newItem;
+                        header.links(i).nextItem = newItem;
                     }
                     
                 }
@@ -331,6 +304,7 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return false;
     }
 
+    //Helper function that returns a new max height for the list
     public boolean newMaxHeight()
     {
         int newMaxHeight = (int) Math.ceil(Math.log(listSize));
@@ -345,15 +319,17 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return false;
     }
 
-    static long RandomSeed = 1;
-    static Random RandomGenerator = new Random(RandomSeed);
+    //Helper function that returns a random height for a new node
+    //50% chance of adding an addition layer to each node
+    static long randomSeed = 1;
+    static Random randomGenerator = new Random(randomSeed);
     public int randomHeight()
     {
         int level = 1;
-        double possibleLevels = RandomGenerator.nextDouble();
+        double possibleLevels = randomGenerator.nextDouble();
         while(possibleLevels > .5 && level < listMaxHeight)
         {
-            possibleLevels = RandomGenerator.nextDouble();
+            possibleLevels = randomGenerator.nextDouble();
             level++;
         }
         return level;
@@ -361,54 +337,53 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
 
     @Override
     @SuppressWarnings("unchecked")
+    //Removes the given value o from the list
     public boolean remove(Object o) {
-        //search for the element to delete
-        if(listSize == 0)
-            return false;
-
+        if(isEmpty()) return false;
+        
         SkipListSetItem curItem = header;
         ArrayList<SkipListSetItem> pointers = new ArrayList<>(listMaxHeight);
         
-        //find position of next value
+        //search for the element to delete
         for(int i=header.links.size()-1; i>=0; i--)
         {
-            while(curItem.links.get(i).nextItem != null && curItem.links.get(i).nextItem.value.compareTo((T)o) < 0)
+            while(curItem.getLinkItem(i) != null && curItem.getLinkItem(i).value.compareTo((T)o) < 0)
             {
-                curItem = curItem.links.get(i).nextItem;
+                curItem = curItem.getLinkItem(i);
             }
             pointers.add(0, curItem);
         }
         
         //the spot of where to delete item
-        curItem = curItem.links.get(0).nextItem;
-
+        curItem = curItem.neighbor();
+        
         //if item is in list
         if(curItem != null && curItem.value.compareTo((T)o) == 0)
         {
             for(int i=0; i<curItem.links.size(); i++)
             {
                 //reassign back link
-                if(curItem.links.get(i).previousItem != null)
+                if(curItem.getLinkPreviousItem(i) != null)
                 {
-                    curItem.links.get(i).previousItem.links.get(i).nextItem = curItem.links.get(i).nextItem;
+                    curItem.getLinkPreviousItem(i).links(i).nextItem = curItem.getLinkItem(i);
                 }
                 //points to header
                 else
                 {
-                    header.links.get(i).nextItem = curItem.links.get(i).nextItem;
+                    header.links(i).nextItem = curItem.getLinkItem(i);
                 }
 
                 //reassign forward pointer
-                if(curItem.links.get(i).nextItem != null)
+                if(curItem.getLinkItem(i) != null)
                 {
-                    curItem.links.get(i).nextItem.links.get(i).previousItem = curItem.links.get(i).previousItem;
+                    curItem.getLinkItem(i).links(i).previousItem = curItem.getLinkPreviousItem(i);
                 }
             }
             listSize--;
         }
 
 
-        //shear Off Height
+        //shear off height
         int oldHeight = listMaxHeight;
         if(newMaxHeight())
         {
@@ -420,9 +395,10 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
                 if(curItem.links.size() < i)
                     break;
 
+                //loop through the list and remove the top link
                 while(curItem != null)
                 {
-                    SkipListSetItem nextItem = curItem.links.get(i).nextItem;
+                    SkipListSetItem nextItem = curItem.getLinkItem(i);
                     curItem.links.remove(i);
                     curItem = nextItem;
                 }
@@ -431,6 +407,7 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return true;
     }
     @Override
+    //Returns true based on if all elements of the given collection is in the list
     public boolean containsAll(Collection<?> c) {
         for(Object item : c)
         {
@@ -440,6 +417,7 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return true;
     }
     @Override
+    //Adds all elements of the given collection to the list
     public boolean addAll(Collection<? extends T> c) {
         boolean changed = false;
         
@@ -452,39 +430,43 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return changed;
     }
     @Override
+    @SuppressWarnings("unchecked")
+    //Returns true if this list is equal to the given object
     public boolean equals(Object o) {
-        //TODO NEED TO FINISH
-        System.out.println("this = " + this);
-        System.out.println("o = " + o);
+        //direct refrence
+        if(this == o) return true;
+        
+        //type check
+        if (!(o instanceof SkipListSet))  return false;
+        
+        SkipListSet<T> oList = (SkipListSet<T>) o;
 
-        if(this == o)
-        {
-            System.out.println("Marker !!");
-            return true;
-        }
-        else
-        {
-            System.out.println("false marker !!");
-            return false;
-        }
+        //size is not correct
+        if(oList.size() != this.size())  return false;
+        
+        //all objects are equal
+        return this.containsAll(oList);
+
     }
     @Override
-    public int hashCode()
-    {
-        SkipListSetItem curItem = header.links.get(0).nextItem;
+    //Returns the hash code of this list
+    public int hashCode() {
+        SkipListSetItem curItem = header.neighbor();
         int totalHashCode = 0;
 
+        //loop through this list and add the hash code of each element
         while(curItem != null)
         {
             totalHashCode += curItem.value.hashCode();
-            curItem = curItem.links.get(0).nextItem;
+            curItem = curItem.neighbor();
         }
         return totalHashCode;
     }
     @Override
+    //Remove all elements from this list except the elements in the given collection
     public boolean retainAll(Collection<?> c) {
         boolean change = false;
-        SkipListSetItem curItem = header.links.get(0).nextItem;
+        SkipListSetItem curItem = header.neighbor();
 
         //loops through list
         while(curItem != null)
@@ -495,13 +477,14 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
                 remove(curItem.value);
                 change = true;
             }
-            curItem = curItem.links.get(0).nextItem;
+            curItem = curItem.neighbor();
         }
 
         return change;
     }
 
     @Override
+    //Remove all elements from the given collection from this list
     public boolean removeAll(Collection<?> c) {
         boolean changed = false;
         for(Object t : c)
@@ -513,6 +496,7 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return changed;
     }
     @Override
+    //Clear this list
     public void clear() {
         header = new SkipListSetItem(null);
         listSize = 0;
@@ -538,23 +522,23 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         throw new UnsupportedOperationException();
     }
     @Override
+    //Returns the first value of this list
     public T first() {
-        return header.links.get(0).nextItem.value;
+        return header.neighbor().value;
     }
     @Override
+    //Returns the last value of this list
     public T last() {
-        
-        if(listSize == 0)
-            return null;
+        if(isEmpty()) return null;
         
         SkipListSetItem curItem = header;
         
         //find position of next value
         for(int i=header.links.size()-1; i>=0; i--)
         {
-            while(curItem.links.get(i).nextItem != null)
+            while(curItem.getLinkItem(i) != null)
             {
-                curItem = curItem.links.get(i).nextItem;
+                curItem = curItem.getLinkItem(i);
             }
         }
         
@@ -562,4 +546,3 @@ public class SkipListSet<T extends Comparable<T>> implements SortedSet<T>{
         return curItem.value;
     }
 }
-    

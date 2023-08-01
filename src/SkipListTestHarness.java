@@ -208,7 +208,7 @@ private static <T extends Comparable<T>> void testCase() {
 public SkipListTestHarness() {}
 public static void main(String args[]) {
     //SortedSet<String> list = new SortedSet<>();
-    /*
+    
     int values = 10;
     ArrayList<Integer> blankCollection = new ArrayList<Integer>(10);
     for(int i=0; i< values; i++)
@@ -218,23 +218,18 @@ public static void main(String args[]) {
     
     System.out.println("\n()");
     SkipListSet<Integer> blankSkipListSet = new SkipListSet<>();
-    blankSkipListSet.printList();
 
     System.out.println("\n(COLLECTION)");
     SkipListSet<Integer> skipListSet = new SkipListSet<>(blankCollection);
-    skipListSet.printList();
 
     System.out.println("\nclear");
     skipListSet.clear();
-    skipListSet.printList();
 
     System.out.println("\nadd");
     skipListSet.add(47);
-    skipListSet.printList();
 
     System.out.println("\naddAll");
     skipListSet.addAll(blankCollection);
-    skipListSet.printList();
 
     System.out.println("\ncontains(47) " + skipListSet.contains(47));
     System.out.println("contains(-30) " + skipListSet.contains(-30));
@@ -257,8 +252,6 @@ public static void main(String args[]) {
     skipListSet.clear();
     skipListSet.addAll(blankCollection);
     System.out.println("equals = " + skipListSet.equals(equalsSkipList));
-    equalsSkipList.printList();
-    skipListSet.printList();
 
     System.out.println("\nHash code " + skipListSet.hashCode());
 
@@ -271,7 +264,6 @@ public static void main(String args[]) {
 
     System.out.println("\nlast = " + skipListSet.last());
     System.out.println("first = " + skipListSet.first());
-    skipListSet.printList();
 
     System.out.println("\nRemove");
     ArrayList<Integer> removeArrayList = new ArrayList<>();
@@ -279,7 +271,6 @@ public static void main(String args[]) {
     removeArrayList.add(87);
     skipListSet.remove(0);
     skipListSet.removeAll(removeArrayList);
-    skipListSet.printList();
 
     System.out.println("\nRetainAll");
     ArrayList<Integer> retainArrayList = new ArrayList<>();
@@ -288,7 +279,6 @@ public static void main(String args[]) {
     retainArrayList.add(9);
     retainArrayList.add(8);
     skipListSet.retainAll(retainArrayList);
-    skipListSet.printList();
 
 
     System.out.println("\nSize = " + skipListSet.size());
@@ -301,12 +291,6 @@ public static void main(String args[]) {
     }
 
     ArrayList<Integer> argArray = new ArrayList<>();
-    SkipListSet<Integer> newlist = new SkipListSet<>();
-    //Object[] argRetArray = skipListSet.toArray(newlist);
-
-    // for (Object object : argRetArray) {
-    //     System.out.println(object);
-    // }
 
     System.out.println("\nitera = ");
     for(Object item : skipListSet)
@@ -319,41 +303,81 @@ public static void main(String args[]) {
     {
         skipListSet.add(z);
     }
-    skipListSet.printList();
     skipListSet.reBalance();
-    skipListSet.printList();
-
-    */
 
     
 
-    // for(int i=0; i< values; i++)
-    // {
-    //     if(skipListSet.contains(i) == false)
-    //     {
-    //         System.out.println(i + " is missing from the list");
-    //     }
-    // }
+    
 
-    //SkipListTestHarness.executeStringCase(100000, 10000, 1000, false, true);
+    for(int h=0; h< values; h++)
+    {
+        if(skipListSet.contains(h) == false)
+        {
+            System.out.println(h + " is missing from the list");
+        }
+    }
+
+    SkipListSet<Integer> sls = new SkipListSet<>();
+    sls.add(10);
+    sls.add(9);
+    sls.add(7);
+
+    
+
+    System.out.println((sls.iterator().next() == 0));
+
+    Integer[] paraArray = new Integer[2];
+    
+    paraArray = sls.toArray(paraArray);
+
+    for (Integer t : paraArray) {
+        System.out.println("ParrArray[] " + t);
+    }
+    
+
+    SkipListSet<Integer> sls1 = new SkipListSet<>();
+    SkipListSet<Integer> sls2 = new SkipListSet<>();
+
+    sls1.add(4);
+    sls1.add(1);
+    sls1.add(2);
+    sls1.add(3);
+    sls2.add(1);
+    sls2.add(2);
+    sls2.add(3);
+    sls2.add(4);
+
+    Integer num1 = 10;
+    Integer num2 = 10;
+    System.out.println("Equals = " + (sls1.equals(sls2)));
+    System.out.println("Equals = " + (num1.equals(num2)));
+
+    Iterator it = sls1.iterator();
+
+    System.out.println(sls1);
+    
+    it.remove();
+
+    System.out.println(sls1);
+
+
+    // SkipListTestHarness.executeStringCase(100000, 10000, 1000, false, true);
     // System.gc();
     // SkipListTestHarness.executeStringCase(1000000, 10000, 1000, false, true);
     // System.gc();
     // SkipListTestHarness.executeStringCase(1000000, 100000, 1000, false, true);
     // System.gc();
-    // SkipListTestHarness.executeDoubleCase(100000, 10000, true, true);
+    // SkipListTestHarness.executeDoubleCase(100000, 10000, false, true);
     // System.gc();
     // SkipListTestHarness.executeDoubleCase(1000000, 10000, false, true);
     // System.gc();
     // SkipListTestHarness.executeDoubleCase(1000000, 100000, false, true);
     // System.gc();
-    //SkipListTestHarness.executeIntCase(100, 10000, false, false);
+    // SkipListTestHarness.executeIntCase(100000, 10000, false, true);
     // System.gc();
-    SkipListTestHarness.executeIntCase(100000, 10000, false, true);
-    System.gc();
-    SkipListTestHarness.executeIntCase(1000000, 10000, false, true);
-    System.gc();
-    SkipListTestHarness.executeIntCase(10000000, 10000, false, true);
-    System.gc();
+    // SkipListTestHarness.executeIntCase(1000000, 10000, false, true);
+    // System.gc();
+    // SkipListTestHarness.executeIntCase(10000000, 10000, false, true);
+    // System.gc();
 }
 }
